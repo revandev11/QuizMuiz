@@ -18,6 +18,8 @@ Bulud texnologiyaları üzrə quiz tətbiqi. Yalnız bu kompüterdə istifadə �
 - Başlanğıc və son sual nömrəsini daxil edib istədiyiniz aralığı işləyə bilərsiniz. Hər iki nömrə aralığa daxildir.
 - Quiz bitəndə düzgün, səhv və boş cavabların sayı, həmçinin hər sualın cavabı göstərilir.
 - Səhv etdiyiniz və yadda saxladığınız sualları yenidən işləyə bilərsiniz.
+- “Oxu və hazırlaş” səhifəsində sualları axtarıb, mövzu və aralığa görə süzüb, açar sözləri və cavabları ayrıca görə bilərsiniz.
+- Açıq və qaranlıq görünüş arasında keçid edə bilərsiniz.
 
 Hazırkı sual bankında 315 sual var. Buna görə 300–330 aralığı seçildikdə yalnız mövcud olan 300–315-ci suallar quizə daxil edilir. Seçimdən əvvəl neçə sualın tapıldığı göstərilir.
 
@@ -26,9 +28,11 @@ Hazırkı sual bankında 315 sual var. Buna görə 300–330 aralığı seçildi
 Sual bankı `questions.js` faylındadır. Məlumatlar `sources/` qovluğundakı bu fayllardan hazırlanıb:
 
 - `Document from Ravan.xlsx` — suallar və yanlış cavab variantları.
-- `Suallar_ehtimal_olunan_cavablarla.pdf` — ehtimal olunan düzgün cavablar.
+- `Suallar_ehtimal_olunan_cavablarla.pdf` — əvvəlki cavab variantları.
+- `Bulud_texnologiyalari_imtahan_suallari_cavablarla.pdf` — A variantındakı ehtimal olunan cavablar və hər sualın açar sözləri.
 
 Excel-də düzgün cavab xanaları boş olduğuna görə PDF-dəki cavablar ehtimal xarakteri daşıyır. Tətbiq seçilmiş variantı sualın ehtimal olunan cavabı ilə müqayisə edir; cavabın doğruluğunu ayrıca araşdırmır. Nəticələri rəsmi cavab açarı kimi qəbul etməzdən əvvəl mühazirə materialı ilə tutuşdurun.
+
 
 ## Məlumatların saxlanması
 

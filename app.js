@@ -18,7 +18,7 @@
   const initial = () => {
     try {
       const data = JSON.parse(localStorage.getItem(KEY) || '{}');
-      return { history: Array.isArray(data.history) ? data.history : [], savedIds: Array.isArray(data.savedIds) ? data.savedIds : [], mode: data.mode === 'instant' ? 'instant' : 'finish', active: data.active || null };
+      return { history: Array.isArray(data.history) ? data.history : [], savedIds: Array.isArray(data.savedIds) ? data.savedIds : [], mode: data.mode === 'instant' ? 'instant' : 'finish', theme: data.theme === 'dark' ? 'dark' : 'light', active: data.active || null };
     } catch { return { history: [], savedIds: [], mode: 'finish', active: null }; }
   };
   let db = initial();
@@ -64,7 +64,7 @@
   }
 
   function header() {
-    return `<header class="topbar"><a class="brand" href="./index.html"><span class="brand-mark">${icon('cloud')}</span><span><b>Lotuxana</b><small>Öz tempində öyrən</small></span></a><span class="local-pill"><i></i> Lokal yaddaş aktivdir</span></header>`;
+    return `<header class="topbar"><a class="brand" href="./index.html"><span class="brand-mark">${icon('cloud')}</span><span><b>Lotuxana</b><small>Öz tempində öyrən</small></span></a><nav class="top-actions"><button class="top-nav ${screen === 'home' || screen === 'quiz' || screen === 'result' ? 'active' : ''}" data-action="home">Quiz</button><button class="top-nav ${screen === 'study' ? 'active' : ''}" data-action="study">Oxu və hazırlaş</button><button class="theme-toggle" data-action="theme" aria-label="${db.theme === 'dark' ? 'Açıq rejimə keç' : 'Qaranlıq rejimə keç'}">${db.theme === 'dark' ? '☀ Açıq' : '☾ Qaranlıq'}</button><span class="local-pill"><i></i> Lokal yaddaş</span></nav></header>`;
   }
   function homeView() {
     const missed = missedIds().size;
@@ -74,7 +74,32 @@
       <section class="stats"><div class="stat"><span class="stat-icon">◷</span><span><small>Quiz sayı</small><b>${db.history.length}</b></span></div><div class="stat"><span class="stat-icon">${icon('checkCircle')}</span><span><small>Ən yaxşı nəticə</small><b>${best}%</b></span></div><div class="stat"><span class="stat-icon">↻</span><span><small>Təkrar sual</small><b>${missed}</b></span></div><div class="stat"><span class="stat-icon">${icon('bookmark')}</span><span><small>Yadda saxlanan</small><b>${db.savedIds.length}</b></span></div></section>
       <section class="range-card card"><div class="section-head"><div><span class="eyebrow">Öz aralığını seç</span><h2>İstədiyin suallardan başla</h2><p>Başlanğıc və son sual nömrəsi aralığa daxildir.</p></div><span class="round-icon">↔</span></div><div class="range-controls"><label>İlk sual<input class="range-input" id="range-from" type="number" min="1" value="1" inputmode="numeric"></label><span class="range-dash">—</span><label>Son sual<input class="range-input" id="range-to" type="number" min="1" value="30" inputmode="numeric"></label><button class="primary" data-action="start-range">Bu aralıqla başla ${icon('arrow')}</button></div><p class="range-summary" id="range-summary">30 sual seçilib. Quiz müddəti: 45 dəqiqə.</p></section>      <section class="grid2"><div class="start-card card"><div class="section-head"><div><span class="eyebrow">Yeni quiz</span><h2>Necə cavablandırmaq istəyirsən?</h2></div><span class="round-icon">⚑</span></div><div class="mode-list"><button class="mode ${db.mode === 'instant' ? 'active' : ''}" data-action="mode" data-mode="instant"><span class="radio">${db.mode === 'instant' ? '<i></i>' : ''}</span><span><b>Hər cavabdan sonra yoxla</b><small>Seçdiyin cavabın düz və ya səhv olduğunu dərhal gör.</small></span>${icon('checkCircle')}</button><button class="mode ${db.mode === 'finish' ? 'active' : ''}" data-action="mode" data-mode="finish"><span class="radio">${db.mode === 'finish' ? '<i></i>' : ''}</span><span><b>Quiz bitəndə yoxla</b><small>Cavablar yalnız quiz tamamlanandan sonra göstərilsin.</small></span>◉</button></div><button class="primary" data-action="start" data-source="all">Quizi başlat ${icon('arrow')}</button><p class="note">Hər quizdə təsadüfi 30 sual • 45 dəqiqə</p></div>
       <div class="practice-card card"><div class="section-head"><div><span class="eyebrow">Təkrar məşq</span><h2>Yadda saxlamaq asanlaşsın</h2></div><span class="round-icon">↻</span></div><button class="practice-row" data-action="start" data-source="wrong" ${missed ? '' : 'disabled'}><span class="practice-icon">${icon('xCircle')}</span><span><b>Səhv etdiklərim</b><small>${missed ? `${missed} fərqli sual` : 'Hələ təkrar sual yoxdur'}</small></span>${icon('arrow')}</button><button class="practice-row" data-action="start" data-source="saved" ${db.savedIds.length ? '' : 'disabled'}><span class="practice-icon saved">${icon('bookmark')}</span><span><b>Yadda saxladıqlarım</b><small>${db.savedIds.length ? `${db.savedIds.length} sual` : 'Hələ sual saxlamamısan'}</small></span>${icon('arrow')}</button><p class="note">Təkrar quizində sual sayı mövcud suallara uyğun olur.</p></div></section>
-      <section class="history-section"><div class="section-head history-head"><div><span class="eyebrow">Şəxsi tarixçə</span><h2>Son quizlər</h2></div><span class="history-count">◷ &nbsp;${db.history.length} tamamlanıb</span></div>${db.history.length ? `<div class="history-list">${history}</div>` : `<div class="empty card"><span class="empty-icon">◷</span><b>İlk quizini ver, nəticələrin burada görünsün</b><span>Nəticələrin və təkrar etmək istədiyin suallar burada saxlanır.</span></div>`}<p class="disclaimer">Cavablar yüklənmiş Excel sualları və ehtimal olunan cavablar PDF-indən götürülüb; rəsmi cavab açarı deyil.</p></section></main>`;
+      <section class="history-section"><div class="section-head history-head"><div><span class="eyebrow">Şəxsi tarixçə</span><h2>Son quizlər</h2></div><span class="history-count">◷ &nbsp;${db.history.length} tamamlanıb</span></div>${db.history.length ? `<div class="history-list">${history}</div>` : `<div class="empty card"><span class="empty-icon">◷</span><b>İlk quizini ver, nəticələrin burada görünsün</b><span>Nəticələrin və təkrar etmək istədiyin suallar burada saxlanır.</span></div>`}<p class="disclaimer">Ehtimal olunan cavab və açar sözlər imtahan PDF-indən götürülüb; rəsmi cavab açarı deyil.</p></section></main>`;
+  }
+
+
+  function studyView() {
+    const topics = [...new Set(questions.map((q) => q.topic))].sort((a, b) => a - b);
+    return `<main class="wrap study-page"><section class="study-intro"><span class="eyebrow">Sakitcə nəzərdən keçir</span><h1>Oxu və hazırlaş</h1><p>Sualları oxu, açar sözlərə bax və cavabı istəyəndə aç. Axtarış və sual aralığı ilə mövzunu daralda bilərsən.</p></section><section class="study-toolbar card"><label>Axtarış<input class="study-filter" id="study-search" type="search" placeholder="Sual, açar söz və ya cavab"></label><label>Mövzu<select class="study-filter" id="study-topic"><option value="all">Bütün mövzular</option>${topics.map((topic) => `<option value="${topic}">Mövzu ${topic}</option>`).join('')}</select></label><label>İlk sual<input class="study-filter" id="study-from" type="number" min="1" value="1"></label><label>Son sual<input class="study-filter" id="study-to" type="number" min="1" value="${questions.length}"></label><span class="study-count" id="study-count"></span></section><section class="study-list" id="study-list"></section></main>`;
+  }
+
+  function updateStudyList() {
+    const list = document.getElementById('study-list');
+    if (!list) return;
+    const query = document.getElementById('study-search').value.trim().toLocaleLowerCase('az');
+    const topic = document.getElementById('study-topic').value;
+    const from = Number(document.getElementById('study-from').value) || 1;
+    const to = Number(document.getElementById('study-to').value) || questions.length;
+    const filtered = questions.filter((q) => {
+      const searchable = `${q.question} ${q.answer} ${q.keywords || ''}`.toLocaleLowerCase('az');
+      return q.id >= from && q.id <= to && (topic === 'all' || String(q.topic) === topic) && (!query || searchable.includes(query));
+    });
+    document.getElementById('study-count').textContent = `${filtered.length} sual göstərilir`;
+    if (!filtered.length) {
+      list.innerHTML = '<div class="empty card"><b>Bu axtarışa uyğun sual tapılmadı.</b><span>Aralığı, mövzunu və ya axtarış sözünü dəyiş.</span></div>';
+      return;
+    }
+    list.innerHTML = filtered.map((q) => `<article class="study-card card"><div class="study-meta"><span>SUAL ${String(q.id).padStart(3, '0')}</span><span>Mövzu ${escapeHtml(q.topic)}</span><span>${q.difficulty === 1 ? 'Asan' : q.difficulty === 2 ? 'Orta' : 'Çətin'}</span></div><h2>${escapeHtml(q.question)}</h2><div class="study-keywords"><b>Açar sözlər</b><span>${escapeHtml(q.keywords || 'Açar söz əlavə edilməyib')}</span></div><details class="study-answer"><summary>Variantlara və ehtimal olunan cavaba bax</summary><div class="study-options">${q.options.map((option, index) => `<div class="study-option ${option === q.answer ? 'is-answer' : ''}"><b>${String.fromCharCode(65 + index)}</b><span>${escapeHtml(option)}</span>${option === q.answer ? '<small>Ehtimal olunan cavab</small>' : ''}</div>`).join('')}</div><p class="study-caveat">Cavab ehtimal xarakteri daşıyır; mühazirə materialı ilə yoxla.</p></details></article>`).join('');
   }
 
   function quizView() {
@@ -84,7 +109,7 @@
     const options = q.options.map((option, i) => { const chosen = answer === option; const good = s.mode === 'instant' && checked && option === q.answer; const bad = s.mode === 'instant' && checked && chosen && !correct; return `<button class="option ${chosen ? 'chosen' : ''} ${good ? 'good' : ''} ${bad ? 'bad' : ''}" data-action="answer" data-index="${i}"><span class="letter">${String.fromCharCode(65 + i)}</span><span>${escapeHtml(option)}</span>${good ? icon('checkCircle') : bad ? icon('xCircle') : ''}</button>`; }).join('');
     const feedback = s.mode === 'instant' && checked && answer ? `<div class="feedback ${correct ? 'good' : 'bad'}">${icon(correct ? 'checkCircle' : 'xCircle')}<span><b>${correct ? 'Düzgün cavabdır!' : 'Bu cavab düzgün deyil.'}</b>${correct ? '' : `<small>Düzgün cavab: ${escapeHtml(q.answer)}</small>`}</span></div>` : s.mode === 'finish' && answer ? '<p class="delayed-note">Düzgünlük quiz tamamlananda göstəriləcək.</p>' : '';
     const map = s.questions.map((item, i) => `<button class="${i === s.currentIndex ? 'current' : ''} ${s.responses[item.id] ? 'answered' : ''}" data-action="goto" data-index="${i}">${i + 1}</button>`).join('');
-    return `<main class="wrap play"><div class="play-head"><div><span class="eyebrow">${escapeHtml(s.rangeLabel || sourceLabel[s.source])}</span><h1>Quiz davam edir</h1></div><div class="timer ${clock}">${icon('clock')}<span><small>Qalan vaxt</small><b id="clock">${time}</b></span></div></div><div class="progress"><span style="width:${answered / s.questions.length * 100}%"></span></div><div class="play-layout"><div><article class="question-card card"><div class="question-meta"><span>SUAL ${String(s.currentIndex + 1).padStart(2, '0')} <i>/ ${String(s.questions.length).padStart(2, '0')}</i></span><button class="save-btn ${db.savedIds.includes(q.id) ? 'saved' : ''}" data-action="save-question">${icon('bookmark')}${db.savedIds.includes(q.id) ? 'Yadda saxlanıb' : 'Sonra bax'}</button></div><h2>${escapeHtml(q.question)}</h2><div class="tags"><span>Mövzu ${escapeHtml(q.topic)}</span><span>${q.difficulty === 1 ? 'Asan' : q.difficulty === 2 ? 'Orta' : 'Çətin'}</span></div><div class="options">${options}</div>${feedback}<div class="question-actions"><button class="nav-btn" data-action="prev" ${s.currentIndex === 0 ? 'disabled' : ''}>${icon('back')} Əvvəlki</button>${s.currentIndex < s.questions.length - 1 ? `<button class="nav-btn next" data-action="next">Növbəti ${icon('arrow')}</button>` : '<button class="finish-btn" data-action="finish">Quizi bitir ✓</button>'}</div></article><div class="bottom-progress"><span>${answered} / ${s.questions.length} cavablanıb</span><span>${s.questions.length - answered} boş</span></div></div><aside class="question-map card"><div class="map-head"><span>Suallar</span><span>${answered} / ${s.questions.length}</span></div><div class="map-grid">${map}</div><div class="legend"><span><i class="current"></i>Cari</span><span><i class="answered"></i>Cavablanıb</span><span><i></i>Boş</span></div><button class="map-finish" data-action="finish">Bitir və nəticəyə bax</button><p class="map-help">Əlfəcin düyməsi sualı təkrar üçün saxlayır.</p></aside></div></main>`;
+    return `<main class="wrap play"><div class="play-head"><div><span class="eyebrow">${escapeHtml(s.rangeLabel || sourceLabel[s.source])}</span><h1>Quiz davam edir</h1></div><div class="timer ${clock}">${icon('clock')}<span><small>Qalan vaxt</small><b id="clock">${time}</b></span></div></div><div class="progress"><span style="width:${answered / s.questions.length * 100}%"></span></div><div class="play-layout"><div><article class="question-card card"><div class="question-meta"><span>SUAL ${String(s.currentIndex + 1).padStart(2, '0')} <i>/ ${String(s.questions.length).padStart(2, '0')}</i></span><button class="save-btn ${db.savedIds.includes(q.id) ? 'saved' : ''}" data-action="save-question">${icon('bookmark')}${db.savedIds.includes(q.id) ? 'Yadda saxlanıb' : 'Sonra bax'}</button></div><h2>${escapeHtml(q.question)}</h2><div class="quiz-keywords"><b>Açar sözlər</b><span>${escapeHtml(q.keywords || 'Açar söz əlavə edilməyib')}</span></div><div class="tags"><span>Mövzu ${escapeHtml(q.topic)}</span><span>${q.difficulty === 1 ? 'Asan' : q.difficulty === 2 ? 'Orta' : 'Çətin'}</span></div><div class="options">${options}</div>${feedback}<div class="question-actions"><button class="nav-btn" data-action="prev" ${s.currentIndex === 0 ? 'disabled' : ''}>${icon('back')} Əvvəlki</button>${s.currentIndex < s.questions.length - 1 ? `<button class="nav-btn next" data-action="next">Növbəti ${icon('arrow')}</button>` : '<button class="finish-btn" data-action="finish">Quizi bitir ✓</button>'}</div></article><div class="bottom-progress"><span>${answered} / ${s.questions.length} cavablanıb</span><span>${s.questions.length - answered} boş</span></div></div><aside class="question-map card"><div class="map-head"><span>Suallar</span><span>${answered} / ${s.questions.length}</span></div><div class="map-grid">${map}</div><div class="legend"><span><i class="current"></i>Cari</span><span><i class="answered"></i>Cavablanıb</span><span><i></i>Boş</span></div><button class="map-finish" data-action="finish">Bitir və nəticəyə bax</button><p class="map-help">Əlfəcin düyməsi sualı təkrar üçün saxlayır.</p></aside></div></main>`;
   }
 
   function resultView(record) {
@@ -100,9 +125,11 @@
 
   function render() {
     clearInterval(timerHandle);
-    const content = screen === 'home' ? homeView() : screen === 'quiz' && db.active ? quizView() : screen === 'result' && viewedRecord ? resultView(viewedRecord) : homeView();
+    document.documentElement.classList.toggle('dark-theme', db.theme === 'dark');
+    const content = screen === 'study' ? studyView() : screen === 'home' ? homeView() : screen === 'quiz' && db.active ? quizView() : screen === 'result' && viewedRecord ? resultView(viewedRecord) : homeView();
     app.innerHTML = `${header()}${content}<footer class="footer">${questions.length} sual &nbsp;•&nbsp; Məlumatlar yalnız bu brauzerdə saxlanır</footer>`;
-    if (screen === 'quiz' && db.active) {
+    if (screen === 'study') updateStudyList();
+    if (db.active) {
       timerHandle = setInterval(() => {
         const time = Math.max(0, db.active.deadline - Date.now()); const node = document.getElementById('clock');
         if (node) node.textContent = `${String(Math.floor(time / 60000)).padStart(2, '0')}:${String(Math.floor((time % 60000) / 1000)).padStart(2, '0')}`;
@@ -112,6 +139,7 @@
   }
 
   app.addEventListener('input', (event) => {
+    if (event.target.matches('.study-filter')) { updateStudyList(); return; }
     if (!event.target.matches('.range-input')) return;
     const from = Number(document.getElementById('range-from').value);
     const to = Number(document.getElementById('range-to').value);
@@ -127,11 +155,16 @@
     summary.textContent = `${selected.length} sual seçilib. Quiz müddəti: 45 dəqiqə.${beyond}`;
     button.disabled = false;
   });
+  app.addEventListener('change', (event) => {
+    if (event.target.matches('.study-filter')) updateStudyList();
+  });
   app.addEventListener('click', (event) => {
     const button = event.target.closest('[data-action]'); if (!button || button.disabled) return;
     const action = button.dataset.action; const s = db.active;
     if (action === 'mode') { db.mode = button.dataset.mode; save(); render(); }
     else if (action === 'start') startQuiz(button.dataset.source);
+    else if (action === 'study') { screen = 'study'; viewedRecord = null; render(); window.scrollTo(0, 0); }
+    else if (action === 'theme') { db.theme = db.theme === 'dark' ? 'light' : 'dark'; save(); render(); }
     else if (action === 'start-range') { const from = Number(document.getElementById('range-from').value); const to = Number(document.getElementById('range-to').value); const ids = questions.filter((q) => q.id >= from && q.id <= to).map((q) => q.id); if (ids.length) startQuiz('range', ids, `${from}–${to}`); }
     else if (action === 'answer' && s) { const q = s.questions[s.currentIndex]; const chosen = q.options[Number(button.dataset.index)]; s.responses[q.id] = chosen; s.checked[q.id] = s.mode === 'instant'; save(); render(); }
     else if (action === 'goto' && s) { s.currentIndex = Number(button.dataset.index); save(); render(); }
@@ -140,7 +173,7 @@
     else if (action === 'save-question' && s) { toggleSaved(s.questions[s.currentIndex].id); }
     else if (action === 'save-review') toggleSaved(Number(button.dataset.id));
     else if (action === 'finish') finishQuiz();
-    else if (action === 'home') { screen = 'home'; viewedRecord = null; save(); render(); window.scrollTo(0, 0); }
+    else if (action === 'home') { screen = db.active ? 'quiz' : 'home'; viewedRecord = null; save(); render(); window.scrollTo(0, 0); }
     else if (action === 'retry-wrong' && viewedRecord) { const ids = viewedRecord.questions.filter((q) => viewedRecord.responses[q.id] && viewedRecord.responses[q.id] !== q.answer).map((q) => q.id); if (ids.length) startQuiz('wrong', ids); }
     else if (action === 'history') { viewedRecord = db.history.find((r) => r.id === button.dataset.id) || null; if (viewedRecord) { screen = 'result'; render(); window.scrollTo(0, 0); } }
   });
