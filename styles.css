@@ -43,3 +43,5 @@
 @media(max-width:600px){.dark-theme .study-toolbar{background:#13243a}}
 
 .bank-picker{display:grid;grid-template-columns:150px minmax(240px,1fr);align-items:center;gap:12px;margin:0 0 16px;color:var(--muted);font-size:.72rem;font-weight:700}.bank-select{min-height:40px;padding:0 12px;border:1px solid var(--line);border-radius:9px;color:var(--ink);background:var(--white);font:600 .75rem Manrope,Arial}.dark-theme .bank-select{color:var(--ink);background:#13243a;border-color:#30445d}@media(max-width:600px){.bank-picker{grid-template-columns:1fr;gap:6px}}
+
+.keyword-toggle{display:inline-flex;align-items:center;min-height:32px;margin:7px 0;padding:0 10px;border:1px solid var(--line);border-radius:8px;color:var(--green);background:var(--white);font-size:.66rem;font-weight:750;cursor:pointer}.keyword-toggle:hover{border-color:var(--green2);background:var(--soft)}.dark-theme .keyword-toggle{color:#b2d1f5;background:#172e49;border-color:#355171}
