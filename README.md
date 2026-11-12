@@ -12,6 +12,8 @@ Bulud texnologiyaları üzrə quiz tətbiqi. Yalnız bu kompüterdə istifadə �
 
 ## Quiz imkanları
 
+- Quizdən əvvəl iki PDF-dən birini seçin. Hər bank 315 sualdan ibarətdir; cavablar və variantlar seçilmiş PDF-ə uyğundur.
+- “Son cavabsız PDF” üçün doğru variant PDF-dəki ✓ işarəsinə əsaslanır.
 - Ümumi quiz sual bankından təsadüfi 30 sual seçir.
 - Hər quiz üçün 45 dəqiqə verilir.
 - Cavabları hər sualdan sonra və ya quiz bitəndə yoxlamaq mümkündür.
@@ -25,14 +27,17 @@ Hazırkı sual bankında 315 sual var. Buna görə 300–330 aralığı seçildi
 
 ## Suallar və cavablar
 
-Sual bankı `questions.js` faylındadır. Məlumatlar `sources/` qovluğundakı bu fayllardan hazırlanıb:
+Əvvəlki PDF-in sualları `questions.js`, “son cavabsiz.pdf” sualları isə `questions-marked.js` faylındadır. PDF-lərin surətləri `sources/` qovluğunda saxlanılır. Məlumatlar `sources/` qovluğundakı bu fayllardan hazırlanıb:
 
 - `Document from Ravan.xlsx` — suallar və yanlış cavab variantları.
 - `Suallar_ehtimal_olunan_cavablarla.pdf` — əvvəlki cavab variantları.
 - `Bulud_texnologiyalari_imtahan_suallari_cavablarla.pdf` — A variantındakı ehtimal olunan cavablar və hər sualın açar sözləri.
+- `son cavabsiz.pdf` — ayrıca sual bankı; doğru cavab PDF-də ✓ ilə göstərilib.
 
 Excel-də düzgün cavab xanaları boş olduğuna görə PDF-dəki cavablar ehtimal xarakteri daşıyır. Tətbiq seçilmiş variantı sualın ehtimal olunan cavabı ilə müqayisə edir; cavabın doğruluğunu ayrıca araşdırmır. Nəticələri rəsmi cavab açarı kimi qəbul etməzdən əvvəl mühazirə materialı ilə tutuşdurun.
 
+
+Hər iki PDF-də sual sayı eynidir, amma sual və cavab variantlarının mətnləri fərqlənə bilər. Mənbə seçimi quiz başlamazdan əvvəl və “Oxu və hazırlaş” səhifəsində edilir.
 
 ## Məlumatların saxlanması
 

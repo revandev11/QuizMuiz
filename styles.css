@@ -41,3 +41,5 @@
 .dark-theme .float{color:#203650;background:#eaf2fb}
 .dark-theme .practice-icon{background:#263650}
 @media(max-width:600px){.dark-theme .study-toolbar{background:#13243a}}
+
+.bank-picker{display:grid;grid-template-columns:150px minmax(240px,1fr);align-items:center;gap:12px;margin:0 0 16px;color:var(--muted);font-size:.72rem;font-weight:700}.bank-select{min-height:40px;padding:0 12px;border:1px solid var(--line);border-radius:9px;color:var(--ink);background:var(--white);font:600 .75rem Manrope,Arial}.dark-theme .bank-select{color:var(--ink);background:#13243a;border-color:#30445d}@media(max-width:600px){.bank-picker{grid-template-columns:1fr;gap:6px}}
